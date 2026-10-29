@@ -48,12 +48,7 @@ class ScheduleParser:
 
     
     def open_page(self):
-        """
-        Открывает страницу расписания.
-        Ждёт:
-        1) появления <select> формы обучения;
-        2) появления ОПЦИЙ в этом <select> (не только placeholder).
-        """
+        
         self.driver.get(self.URL)
 
         # 1. Ждём появления <select>
@@ -74,13 +69,8 @@ class ScheduleParser:
 
 
     def select_form(self, form_name: str = "Заочная 3 года 10 мес"):
-        """
-        Устойчивый выбор формы обучения:
-        - ждёт появления нужной опции;
-        - не падает, если опция уже выбрана;
-        - пробует частичное совпадение, если точное не сработало.
-        """
-        # Ждём появления опции с нужным текстом
+        
+        
         self.wait.until(
             lambda d: self._option_exists(
                 d, self.SELECT_FORM_ID, form_name
@@ -92,7 +82,7 @@ class ScheduleParser:
         )
         select = Select(select_element)
 
-        # Если уже выбрана — выходим
+        
         current_text = (
             select.first_selected_option.text
             .replace("\xa0", " ").strip()
@@ -100,14 +90,14 @@ class ScheduleParser:
         if current_text.lower() == form_name.replace("\xa0", " ").strip().lower():
             return
 
-        # Пробуем точное совпадение
+        
         try:
             select.select_by_visible_text(form_name)
             return
         except Exception:
             pass
 
-        # Частичное совпадение
+        
         target = form_name.replace("\xa0", " ").strip().lower()
         for opt in select.options:
             opt_text = opt.text.replace("\xa0", " ").strip().lower()
@@ -115,7 +105,7 @@ class ScheduleParser:
                 select.select_by_visible_text(opt.text)
                 return
 
-        # Ничего не нашли — понятная ошибка
+        
         available = [
             opt.text.replace("\xa0", " ").strip()
             for opt in select.options
@@ -127,13 +117,7 @@ class ScheduleParser:
 
 
     def select_group(self, group_name: str = "АЗИС 23-1"):
-        """
-        Устойчивый выбор группы:
-        - ждёт появления группы в списке (AJAX);
-        - не падает, если группа уже выбрана;
-        - пробует частичное совпадение.
-        """
-        # Ждём появления группы в списке
+        
         self.wait.until(
             lambda d: self._option_exists(
                 d, self.SELECT_GROUP_ID, group_name
@@ -145,7 +129,7 @@ class ScheduleParser:
         )
         select = Select(select_element)
 
-        # Если уже выбрана — выходим
+        
         current_text = (
             select.first_selected_option.text
             .replace("\xa0", " ").strip()
@@ -153,14 +137,14 @@ class ScheduleParser:
         if current_text.lower() == group_name.replace("\xa0", " ").strip().lower():
             return
 
-        # Точное совпадение
+        
         try:
             select.select_by_visible_text(group_name)
             return
         except Exception:
             pass
 
-        # Частичное совпадение
+        
         target = group_name.replace("\xa0", " ").strip().lower()
         for opt in select.options:
             opt_text = opt.text.replace("\xa0", " ").strip().lower()
@@ -250,20 +234,20 @@ class ScheduleParser:
         self.select_group(group)
         self.set_dates(date_from, date_to)
 
-        # Ждём появления таблицы
+        
         self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, self.TABLE_CSS)
             )
         )
-        # Ждём, пока строки реально отрисуются
+        
         self.wait.until(
             lambda d: len(
                 d.find_elements(By.CSS_SELECTOR, self.TABLE_CSS)
             ) > 0
         )
 
-        # Парсим строки
+        
         rows = self.driver.find_elements(
             By.CSS_SELECTOR, self.TABLE_CSS
         )

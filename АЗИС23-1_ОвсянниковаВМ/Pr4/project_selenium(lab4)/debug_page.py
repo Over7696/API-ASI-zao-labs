@@ -8,7 +8,7 @@ from schedule_parser import ScheduleParser
 
 def main():
 
-    print("ОТЛАДКА ПАРСЕРА РАСПИСАНИЯ АПИ НГТУ")
+    
     print("Период: 07.09.2026 – 18.10.2026")
 
 
@@ -22,13 +22,13 @@ def main():
             date_from="2026-09-07",
             date_to="2026-10-18",
         )
-        print(f"    ✓ Получено {len(schedule)} строк")
+        print(f" Получено {len(schedule)} строк")
 
         print("\n[2] Тип текущей недели:")
         print(f"    {parser.get_week_type()}")
 
        
-        print("ПОЛУЧЕННОЕ РАСПИСАНИЕ:")
+        print("расписание:")
 
         for i, row in enumerate(schedule, 1):
             print(f"\nСтрока {i}:")

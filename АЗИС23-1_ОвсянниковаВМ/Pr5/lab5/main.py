@@ -6,7 +6,7 @@ import sqlite3
 app = FastAPI()
 
 
-# ---------- Database setup ----------
+
 def init_db():
     conn = sqlite3.connect('auction.db')
     cursor = conn.cursor()
@@ -25,7 +25,7 @@ def init_db():
 init_db()
 
 
-# ---------- Models ----------
+
 class Item(BaseModel):
     name: str
     description: Optional[str] = None
@@ -36,7 +36,7 @@ class ItemOut(Item):
     id: int
 
 
-# ---------- Endpoints ----------
+
 @app.post("/items/", response_model=ItemOut)
 def create_item(item: Item):
     conn = sqlite3.connect('auction.db')
